@@ -26,6 +26,7 @@
   directory
   file
   link
+  service
   systemd_unit
   route
   mount
@@ -45,12 +46,33 @@
       conf.each do |key,value|
         case key
         when 'content'
+
+          if resource.eql? 'file'
+            value = "
+              #
+              # DO NOT CHANGE THIS FILE MANUALLY!
+              #
+              # This file is managed by the Chef configuration management system
+              #
+            #{value}
+            "
+          end
+
           value = value.gsub(/^ */,'')
           value = value.split("\n")
           value = value[1..-1] if value[0] =~ /^$/
-          value = value.join("\n")
+          value = value.join("\n") << "\n"
+          send(key,value)
+
+        when 'notifies'
+
+          send(key, *value)
+
+        else
+
+          send(key,value)
+
         end
-        send(key,value)
       end
     end
   end
