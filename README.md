@@ -1,8 +1,10 @@
 ## Description
 
-**THIS IS JUST A PROTOYPE!**
+**THIS IS JUST A PROTOTYPE!**
 
 Provide access to Chef resources by attributes. 
+
+Take a look to [test/roles/](test/roles) for example.
 
 ## License
 

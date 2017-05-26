@@ -27,7 +27,8 @@ default_attributes(
         FallbackDNS=8.8.8.8 8.8.4.4
         Domains=devops.test
         Cache=yes
-      '
+      ',
+      notifies: [ :restart, 'systemd_unit[systemd-resolved.service]' ]
     },
     '/etc/systemd/journald.conf.d/journal-storage.conf': {
       content: '
