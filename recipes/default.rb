@@ -21,12 +21,14 @@
 %w(
   yum_repository
   package
+  group
+  user
   directory
   file
   link
-  user
-  group
   systemd_unit
+  route
+  mount
 ).each do |resource|
 
   next unless node.has_key? resource
