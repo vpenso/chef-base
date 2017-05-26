@@ -2,10 +2,10 @@ name "systemd"
 description "Systemd configuration for testing"
 run_list( "recipe[base]" )
 default_attributes(
-  package: {
-    'systemd-networkd': {},
-    'systemd-resolved': {}
-  },
+  package: [
+    'systemd-networkd',
+    'systemd-resolved'
+  ],
   directory: {
     '/etc/systemd/network': { recursive: true },
     '/etc/systemd/journald.conf.d': { recursive: true }
