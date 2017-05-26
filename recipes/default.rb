@@ -43,10 +43,11 @@
   node[resource].each do |name,conf|
 
     public_send(resource, name) do
+
       conf.each do |key,value|
+      
         case key
         when 'content'
-
           if resource.eql? 'file'
             value = "
               #
@@ -57,24 +58,23 @@
             #{value}
             "
           end
-
           value = value.gsub(/^ */,'')
           value = value.split("\n")
           value = value[1..-1] if value[0] =~ /^$/
           value = value.join("\n") << "\n"
           send(key,value)
-
-        when 'notifies'
-
+        
+        when 'notifies','subscribes'
           send(key, *value)
-
+        
         else
-
           send(key,value)
-
         end
+
       end
+
     end
+
   end
 
 end
