@@ -2,15 +2,19 @@ name "systemd"
 description "Systemd configuration for testing"
 run_list( "recipe[base]" )
 default_attributes(
+  
   package: [
     'systemd-networkd',
     'systemd-resolved'
   ],
+  
   directory: {
     '/etc/systemd/network': { recursive: true },
     '/etc/systemd/journald.conf.d': { recursive: true }
   },
+
   file: {
+    
     '/etc/systemd/network/50-dhcp.network': {
       content: '
         [Match]
@@ -20,6 +24,10 @@ default_attributes(
         DHCP=yes
       '
     },
+
+    ##
+    # Configure DNS resolution
+    #
     '/etc/systemd/resolved.conf': {
       content: '
         [Resolve]
@@ -30,18 +38,41 @@ default_attributes(
       ',
       notifies: [ :restart, 'systemd_unit[systemd-resolved.service]' ]
     },
+  
+    ##
+    # Configure journald to store log file persistently 
+    #
     '/etc/systemd/journald.conf.d/journal-storage.conf': {
       content: '
         [Journal]
         Storage=persistent
-      '
+      ',
+      notifies: [ :restart, 'systemd_unit[systemd-journald.service]' ]
     }
   },
+
+  execute: {
+
+    ##
+    # Enable persistent journald change without reboot...
+    #
+    'systemd-tmpfiles --create --prefix /var/log/journal': {
+      creates: '/var/log/journal',
+      notifies: [ :restart, 'systemd_unit[systemd-journald.service]' ]
+    }
+
+  },
+
   systemd_unit: {
+
     'systemd-networkd.service': { action: [:enable,:start] },
+    
     'systemd-resolved.service': { action: [:enable,:start] },
+    
     'systemd-logind.service': { action: :enable },
+ 
     'systemd-journald.service': { action: [:enable,:start] },
+    
     'set-timezone.service': {
       content: '
         [Unit]

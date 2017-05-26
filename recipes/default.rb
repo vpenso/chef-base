@@ -26,6 +26,8 @@
   directory
   file
   link
+  execute
+  bash
   service
   systemd_unit
   route
