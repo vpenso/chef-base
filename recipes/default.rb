@@ -19,16 +19,22 @@
 #
 
 %w(
+  apt_repository
+  apt_update
   yum_repository
   package
   group
   user
   directory
   file
+  remote_file
   link
   template
+  git
+  subversion
   execute
   bash
+  script
   service
   systemd_unit
   route
