@@ -26,6 +26,7 @@
   directory
   file
   link
+  template
   execute
   bash
   service
@@ -51,24 +52,43 @@
         case key
         when 'content'
           if resource.eql? 'file'
-            value = "
-              #
-              # DO NOT CHANGE THIS FILE MANUALLY!
-              #
-              # This file is managed by the Chef configuration management system
-              #
-            #{value}
-            "
+
+            # Disable the header comment by attribute 
+            banner = if not node[resource][name].has_key? 'banner' 
+                       true
+                     else
+                       node[resource][name]['banner']
+                     end
+
+            # Add a banner to indicate that the written file is
+            # managed by Chef
+            if banner 
+              value = "
+                #
+                # DO NOT CHANGE THIS FILE MANUALLY!
+                #
+                # This file is managed by the Chef configuration management system
+                #
+              #{value}
+              "
+            end
+
           end
+
           value = value.gsub(/^ */,'')
           value = value.split("\n")
           value = value[1..-1] if value[0] =~ /^$/
           value = value.join("\n") << "\n"
           send(key,value)
         
-        when 'notifies','subscribes'
+        when 'notifies','subscribes','template'
           send(key, *value)
-        
+
+        # Ignore the following keys...
+        when 'banner'
+          next
+
+        # Pass all attributes as resource properties by default
         else
           send(key,value)
         end
