@@ -1,4 +1,4 @@
-name 'ntp'
+name 'ntpd'
 description 'Base configuration for CentOS 7'
 run_list( 'recipe[base]' )
 default_attributes(
