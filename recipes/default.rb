@@ -21,7 +21,9 @@
 %w(
   apt_repository
   apt_update
+  apt_package
   yum_repository
+  yum_package
   package
   group
   user
@@ -44,9 +46,24 @@
   next unless node.has_key? resource
   next if node[resource].empty?
 
-  if resource.eql? 'package' and node[resource].is_a? Array
-    package node[resource]
-    next
+
+  # Ignore platform dependent resources
+  case resource
+  when 'apt_repository'
+  when 'apt_update'
+  when 'apt_package'
+    next unless node['platform'] == 'debian'
+  when 'yum_repository'
+  when 'yum_package'
+    next unless node['platform'] == 'centos'
+  end
+
+  # Convenience for package deployment
+  if %w(apt_package yum_package package).include? resource
+    if node[resource].is_a? Array
+      package node[resource]
+      next
+    end
   end
 
   node[resource].each do |name,conf|
@@ -56,6 +73,7 @@
       conf.each do |key,value|
       
         case key
+
         when 'content'
           if resource.eql? 'file'
 
