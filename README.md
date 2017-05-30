@@ -56,7 +56,7 @@ Take a look to [test/roles/](test/roles) directory for a list of example roles u
 
 ```ruby
 name 'ntpd'
-description 'Base configuration for CentOS 7'
+description 'NTPD configuration'
 run_list( 'recipe[base]' )
 default_attributes(
  
