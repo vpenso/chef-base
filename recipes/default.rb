@@ -47,13 +47,10 @@ if not node['base']['resources'].empty?
   resource_list += node['base']['resources']
 end
 
-puts resource_list.inspect
-
 resource_list.each do |resource|
 
   next unless node.has_key? resource
   next if node[resource].empty?
-
 
   # Ignore platform dependent resources
   case resource
