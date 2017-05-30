@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-%w(
+resource_list = %w(
   apt_repository
   apt_update
   apt_package
@@ -41,7 +41,13 @@
   systemd_unit
   route
   mount
-).each do |resource|
+)
+
+if not node['base']['resources'].empty?
+  resource_list += node['base']['resources']
+end
+
+resource_list.each do |resource|
 
   next unless node.has_key? resource
   next if node[resource].empty?
