@@ -2,7 +2,7 @@
 
 This cookbook enables to configuration of generic [Chef resources](https://docs.chef.io/resources.html) by attributes.
 
-The following resource list include by default mapped resources: 
+The following resource list include the by default mapped Chef resources: 
 
 ```
 apt_repository
@@ -31,7 +31,9 @@ mount
 
 ### Configuration
 
-Append more resources to the resource list mapped by this cookbook with the attribute `base/resources`:
+Append other resources to the resource list mapped by this cookbook with the attribute `base/resources`.
+
+Following example illustrates this for the `cron` resource:
 
 ```ruby
 name 'cron'
@@ -54,7 +56,9 @@ default_attributes(
 
 ### Usage
 
-Take a look to [test/roles/](test/roles) directory for a list of example roles using this cookbook.
+Take a look to the [test/roles/](test/roles) directory for a list of example roles using this cookbook.
+
+Following example configures NTPD on Debian and CentOS:
 
 ```ruby
 name 'ntpd'
