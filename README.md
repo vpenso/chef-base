@@ -2,6 +2,8 @@
 
 This cookbook enables to configuration of generic [Chef resources](https://docs.chef.io/resources.html) by attributes.
 
+The following resource list include by default mapped resources: 
+
 ```
 apt_repository
 apt_update
