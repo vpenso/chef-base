@@ -19,6 +19,11 @@
 #
 
 resource_list = %w(
+  directory
+  file
+  remote_file
+  link
+  template
   apt_repository
   apt_update
   apt_package
@@ -27,11 +32,6 @@ resource_list = %w(
   package
   group
   user
-  directory
-  file
-  remote_file
-  link
-  template
   git
   subversion
   execute
