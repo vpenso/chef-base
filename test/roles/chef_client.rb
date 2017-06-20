@@ -16,6 +16,18 @@ default_attributes(
         gpgcheck=0
       '
     },
+    '/etc/chef/client.rb': {
+      content: %q[
+        node_name             "#{`hostname -f`.strip}"
+        chef_server_url       'https://lxrm01.devops.test/organizations/devops'
+        client_key            '/etc/chef/client.pem'
+        ssl_verify_mode       :verify_none
+        log_level             :fatal
+        log_location          STDOUT
+        file_backup_path      '/var/backups/chef'
+        file_cache_path       '/var/cache/chef'
+      ]
+    },
     '/etc/systemd/system/chef-client.service': {
       content: '
         [Unit]
