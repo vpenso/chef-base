@@ -23,6 +23,10 @@ default_attributes(
     '/var/www/html/repo/chef-13.1.31-1.el7.x86_64.rpm': {
       source: 'https://packages.chef.io/files/stable/chef/13.1.31/el/7/chef-13.1.31-1.el7.x86_64.rpm',
       notifies: [:run, 'execute[createrepo --update /var/www/html/repo]', :delayed]
+    },
+    '/var/www/html/repo/chef-server-core-12.15.7-1.el7.x86_64.rpm': {
+      source: 'https://packages.chef.io/files/stable/chef-server/12.15.7/el/7/chef-server-core-12.15.7-1.el7.x86_64.rpm',
+      notifies: [:run, 'execute[createrepo --update /var/www/html/repo]', :delayed]
     }
   }
 )
