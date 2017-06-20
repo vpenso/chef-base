@@ -1,5 +1,5 @@
-name 'yum'
-description 'Yum configuration for testing'
+name 'yum_mirror'
+description 'Configure a Yum package mirror'
 run_list( 'recipe[base]' )
 default_attributes(
   package: [
@@ -89,7 +89,7 @@ default_attributes(
     # Disable the firewall in the internal network
     'firewalld.service': { action: [:stop, :disable] },
     # Autonomous package updates
-    'yum-cron.service': { action: [:stop, :disable] },
+    'yum-cron.service': { action: [:start, :enable] },
     # Service to sync the package mirror
     'reposync.timer':  { action: [:enable, :start] }
   }
