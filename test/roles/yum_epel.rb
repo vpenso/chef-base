@@ -5,7 +5,7 @@ run_list(
 )
 default_attributes(
   execute: {
-    # Initialize once when repo is created
+    # Enable the Fedora EPEL package repository
     'epel-release': {
       command: 'yum -y install epel-release',
       creates: '/etc/yum.repos.d/epel.repo'
@@ -13,6 +13,7 @@ default_attributes(
   },
   package: {
     'singularity': {
+      # Make sure EPEL is available before installing packages from it
       notifies: [ :run, 'execute[epel-release]', :before ]
     }
   }
