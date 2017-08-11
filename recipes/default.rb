@@ -110,7 +110,7 @@ resource_list.each do |resource|
           value = value.join("\n") << "\n"
           send(key,value)
         
-        when 'notifies','subscribes','template'
+        when 'notifies','subscribes','template','not_if','only_if'
           send(key, *value)
 
         # Ignore the following keys...
