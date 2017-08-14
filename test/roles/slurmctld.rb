@@ -3,11 +3,29 @@ description 'Slurm Cluster Controller deployment'
 run_list( 'recipe[base]' )
 default_attributes(
  
+  ##
+  # Groups
+  #
+  group: {
+    slurm: {}
+  },
 
   ##
   # USERS
   #
   user: {
+    ##
+    # User to operate the Slurm services
+    #
+    slurm: {
+      home: '/var/lib/slurm',
+      group: 'slurm',
+      shell: '/bin/bash',
+      comment: 'SLURM workload manager'
+    },
+    ##
+    # Slurm cluster users
+    #
     spock: { 
       uid: 1111,
       home: '/network/spock',
@@ -34,7 +52,12 @@ default_attributes(
   # DIRECTORIES
   #
   directory: {
-    ###
+    ##
+    # For the Slurm services
+    #
+    '/var/spool/slurm/ctld': { owner: 'slurm', recursive: true },
+    '/var/log/slurm': { owner: 'slurm' },
+    ##
     # Create directories used for NFS export
     #
     '/etc/slurm': {},
@@ -83,7 +106,12 @@ default_attributes(
   ##
   # PACKAGES
   # 
-  package: [ 'nfs-utils', 'slurm' ],
+  yum_package: [ 
+    'nfs-utils', 
+    'slurm',
+    'slurm-slurmdbd',
+    'slurm-munge'
+  ],
 
   ##
   # SYSTEM SERVICES
@@ -91,6 +119,7 @@ default_attributes(
   systemd_unit: {
     'nfs-server.service': { action: [:enable,:start] },
     'munge.service': { action: [:enable,:start] },
-    'slurmctld.service': { action: [:enable] }
+    'slurmctld.service': { action: [:enable] },
+    'slurmdbd.service': { action: [:enable]}
   }
 )
