@@ -55,7 +55,9 @@ default_attributes(
     ##
     # For the Slurm services
     #
+    '/var/lib/slurm/ctld': { owner: 'slurm', recursive: true },
     '/var/spool/slurm/ctld': { owner: 'slurm', recursive: true },
+    '/var/run/slurm': { owner: 'slurm' },
     '/var/log/slurm': { owner: 'slurm' },
     ##
     # Create directories used for NFS export
