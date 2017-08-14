@@ -19,6 +19,8 @@
 #
 
 resource_list = %w(
+  group
+  user
   directory
   file
   remote_file
@@ -30,8 +32,6 @@ resource_list = %w(
   yum_repository
   yum_package
   package
-  group
-  user
   git
   subversion
   execute
