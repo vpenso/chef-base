@@ -57,7 +57,6 @@ default_attributes(
     #
     '/var/lib/slurm/ctld': { owner: 'slurm', recursive: true },
     '/var/spool/slurm/ctld': { owner: 'slurm', recursive: true },
-    '/var/run/slurm': { owner: 'slurm' },
     '/var/log/slurm': { owner: 'slurm' },
     ##
     # Create directories used for NFS export
@@ -101,6 +100,7 @@ default_attributes(
      #
      '/etc/munge/munge.key' => {
         content: '030340d651edb16efabf24a8c080d4b7',
+        action: [ :nothing ],
         notifies: [ :restart, 'systemd_unit[munge.service]' ]
      }
   },
@@ -108,12 +108,13 @@ default_attributes(
   ##
   # PACKAGES
   # 
-  yum_package: [ 
-    'nfs-utils', 
-    'slurm',
-    'slurm-slurmdbd',
-    'slurm-munge'
-  ],
+  yum_package: {
+    'nfs-utils': {},
+    'munge': { notifies: [ :create, 'file[/etc/munge/munge.key]' ] },
+    'slurm': {},
+    'slurm-slurmdbd': {},
+    'slurm-munge': {}
+  },
 
   ##
   # SYSTEM SERVICES
