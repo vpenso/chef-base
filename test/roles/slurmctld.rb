@@ -102,7 +102,40 @@ default_attributes(
         content: '030340d651edb16efabf24a8c080d4b7',
         action: [ :nothing ],
         notifies: [ :restart, 'systemd_unit[munge.service]' ]
+     },
+     ##
+     # slurmctld firewall configuration
+     #
+     '/etc/firewalld/services/slurmctld.xml': {
+       content: '
+         <?xml version="1.0" encoding="utf-8"?>
+	 <service>
+	   <short>slurmctld</short>
+	   <description>SLURM Workload Manager</description>
+	   <port protocol="udp" port="6817"/>
+	   <port protocol="tcp" port="6817"/>
+	   <port protocol="udp" port="6818"/>
+	   <port protocol="tcp" port="6818"/>
+	   <port protocol="udp" port="7321"/>
+	   <port protocol="tcp" port="7321"/>
+	 </service>
+       ',
+       notifies: [ :run, 'execute[firewall-cmd-add-slurmctld]' ]
      }
+  },
+
+  ##
+  # EXECUTE
+  #
+  execute: {
+    'firewall-cmd-add-slurmctld': {
+      command: '
+        firewall-cmd --zone=public --add-service=slurmctld --permanent
+        firewall-cmd --reload
+      ',
+      action: [ :nothing ],
+      not_if: [ 'firewall-cmd --zone=public --query-service=slurmctld' ]
+    }    
   },
 
   ##
