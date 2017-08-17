@@ -62,6 +62,9 @@ default_attributes(
   # EXECUTE
   #
   execute: {
+    ##
+    # Open the firewall for the SLURM service
+    #
     'firewall-cmd-add-slurmctld': {
       command: '
         firewall-cmd --zone=public --add-service=slurmctld --permanent
@@ -69,14 +72,25 @@ default_attributes(
       ',
       action: [ :nothing ],
       not_if: [ 'firewall-cmd --zone=public --query-service=slurmctld' ]
-    }    
+    },
+    ##
+    # Open firewall for the NFS service
+    #
+    'firwall-cmd-add-nfs':{
+      command: '
+        firewall-cmd --permanent --add-service=nfs
+        firewall-cmd --permanent --add-service=mountd
+        firewall-cmd --permanent --add-service=rpc-bind
+        firewall-cmd --reload
+      ',
+      not_if: [ 'firewall-cmd --zone=public --query-service=nfs' ]
+    }
   },
 
   ##
   # PACKAGES
   # 
   yum_package: {
-    'nfs-utils': {},
     'slurm-slurmdbd': {}
   },
 

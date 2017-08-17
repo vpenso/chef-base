@@ -91,6 +91,7 @@ default_attributes(
   # PACKAGES
   # 
   yum_package: {
+    'nfs-utils': {},
     'slurm': {},
     'slurm-munge': {}
   }
