@@ -110,8 +110,21 @@ resource_list.each do |resource|
           value = value.join("\n") << "\n"
           send(key,value)
         
-        when 'notifies','subscribes','template','not_if','only_if'
+        when 'template','not_if','only_if'
           send(key, *value)
+
+        when 'notifies','subscribes'
+          # nested arrays indicate multiple notifies/subscribes
+          if value[0].kind_of? Array
+            # loop over the notifies/subscribes
+            value.each do |sub_value|
+              # and send them individually
+              send(key, *sub_value)
+            end
+          # a single notifies/subscribes
+          else
+            send(key, *value)
+          end
 
         # Ignore the following keys...
         when 'banner'
