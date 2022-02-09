@@ -18,6 +18,8 @@
 # limitations under the License.
 #
 
+require 'erb'
+
 resource_list = %w(
   group
   user
@@ -75,7 +77,18 @@ resource_list.each do |resource|
 
     public_send(resource, name) do
 
+      case conf['template_fields']
+      
+      when String
+        template_fields = [conf['template_fields']] 
+      when Chef::Node::ImmutableArray
+        template_fields = conf['template_fields']
+      else
+        template_fields = []
+      end
+
       conf.each do |key,value|
+        value=ERB.new(value).result_with_hash(node:node) if template_fields.include?key
       
         case key
 
@@ -127,7 +140,7 @@ resource_list.each do |resource|
           end
 
         # Ignore the following keys...
-        when 'banner'
+        when 'banner','template_fields'
           next
 
         # Pass all attributes as resource properties by default
