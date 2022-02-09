@@ -75,17 +75,17 @@ resource_list.each do |resource|
 
   node[resource].each do |name,conf|
 
-    public_send(resource, name) do
+    case conf['template_fields']
+     
+    when String
+      template_fields = [conf['template_fields']] 
+    when Chef::Node::ImmutableArray
+      template_fields = conf['template_fields']
+    else
+      template_fields = []
+    end
 
-      case conf['template_fields']
-      
-      when String
-        template_fields = [conf['template_fields']] 
-      when Chef::Node::ImmutableArray
-        template_fields = conf['template_fields']
-      else
-        template_fields = []
-      end
+    public_send(resource, name) do
 
       conf.each do |key,value|
         value=ERB.new(value).result_with_hash(node:node) if template_fields.include?key
