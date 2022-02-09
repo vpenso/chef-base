@@ -85,7 +85,11 @@ resource_list.each do |resource|
       template_fields = []
     end
 
-    public_send(resource, name) do
+    expanded_name = template_fields.include?("name") ?
+                      ERB.new(name).result_with_hash(node:node) :
+                      name
+
+    public_send(resource, expanded_name) do
 
       conf.each do |key,value|
         value=ERB.new(value).result_with_hash(node:node) if template_fields.include?key
