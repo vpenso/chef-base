@@ -148,7 +148,7 @@ default_attributes(
 
 Additionally you can use ERB template style attributes for generic/instantiatable roles and a boilerplate-less alternative to Chef::Resource::Template.
 This is implemented for all attributes that have plain String content, including the user defined resource _name_.
-To enable this feature one has to configure an additional attribute _template_fields_ (String/Array of String) of the resource, specifying the attributes that should be expanded/rendered by ERB using the chef _node_-Object.
+To enable this feature one has to configure an additional attribute _template_fields_ (String/Array of String) of the resource, specifying the attributes that should be expanded/rendered by ERB using the Chef _node_-object.
 
 ```ruby
 #...  part of default_attributes(
