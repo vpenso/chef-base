@@ -54,12 +54,9 @@ resource_list.each do |resource|
 
   # Ignore platform dependent resources
   case resource
-  when 'apt_repository'
-  when 'apt_update'
-  when 'apt_package'
+  when 'apt_repository', 'apt_update', 'apt_package'
     next unless node['platform'] == 'debian'
-  when 'yum_repository'
-  when 'yum_package'
+  when 'yum_repository', 'yum_package'
     next unless node['platform'] == 'centos'
   end
 
