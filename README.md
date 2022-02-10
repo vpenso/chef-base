@@ -144,11 +144,48 @@ default_attributes(
 
 ```
 
+### ERB style attributes
+
+Additionally you can use ERB template style attributes for generic/instantiatable roles and a boilerplate-less alternative to Chef::Resource::Template.
+This is implemented for all attributes that have plain String content, including the user defined resource _name_.
+To enable this feature one has to configure an additional attribute _template_fields_ (String/Array of String) of the resource, specifying the attributes that should be expanded/rendered by ERB using the Chef _node_-object.
+
+```ruby
+#...  part of default_attributes(
+  file: {
+    ##
+    # Time Synchronisation 
+    #
+    "<%= node['ntp_config_location'] %>" => {
+      content: %q<
+	<% node['ntp_servers'].each do |server| %>
+        <%- %>server = <%= server -%>
+	<%- end %>
+	<% node['ntp_config_extra'].each do |conf| %>
+        <%=- conf -%>
+	<% end %>
+        restrict -4 default kod notrap nomodify nopeer noquery
+        restrict -6 default kod notrap nomodify nopeer noquery
+        restrict 127.0.0.1
+        restrict ::1
+      >,
+      "template_fields":["name","content"]
+    }
+  },
+  "ntp_config_location" => "/etc/ntp.conf",
+  "ntp_servers" => ["0.pool.ntp.org","1.pool.ntp.org","2.pool.ntp.org","3.pool.ntp.org"],
+  "ntp_config_extra" => ["driftfile /var/lib/ntp/ntp.drift",
+  		       	 "statistics loopstats peerstats clockstats",
+  			 "filegen loopstats file loopstats type day enable",
+			 "filegen peerstats file peerstats type day enable",
+			 "filegen clockstats file clockstats type day enable"]
+#...  end of default_attributes(
+```
 ## License
 
-Author:: Victor Penso
+Author:: Victor Penso, Jan Knedlik
 
-Copyright:: 2017
+Copyright:: 2017, 2022
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
