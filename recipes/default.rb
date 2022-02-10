@@ -18,6 +18,8 @@
 # limitations under the License.
 #
 
+require 'erb'
+
 resource_list = %w(
   group
   user
@@ -70,9 +72,27 @@ resource_list.each do |resource|
 
   node[resource].each do |name,conf|
 
-    public_send(resource, name) do
+    # Get config fields which are to be expanded via ERB
+    case conf['template_fields']
+     
+    when String
+      template_fields = [conf['template_fields']] 
+    when Chef::Node::ImmutableArray
+      template_fields = conf['template_fields']
+    else
+      template_fields = []
+    end
+
+    # Expand user defined 'name' of resource via ERB if specified
+    expanded_name = template_fields.include?("name") ?
+                      ERB.new(name,nil,'-').result_with_hash(node:node) :
+                      name
+
+    public_send(resource, expanded_name) do
 
       conf.each do |key,value|
+        # Expand config field via ERB if specified
+        value=ERB.new(value,nil,'-').result_with_hash(node:node) if template_fields.include?key
       
         case key
 
@@ -124,7 +144,7 @@ resource_list.each do |resource|
           end
 
         # Ignore the following keys...
-        when 'banner'
+        when 'banner','template_fields'
           next
 
         # Pass all attributes as resource properties by default
