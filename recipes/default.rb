@@ -88,14 +88,14 @@ resource_list.each do |resource|
 
     # Expand user defined 'name' of resource via ERB if specified
     expanded_name = template_fields.include?("name") ?
-                      ERB.new(name).result_with_hash(node:node) :
+                      ERB.new(name,nil,'-').result_with_hash(node:node) :
                       name
 
     public_send(resource, expanded_name) do
 
       conf.each do |key,value|
         # Expand config field via ERB if specified
-        value=ERB.new(value).result_with_hash(node:node) if template_fields.include?key
+        value=ERB.new(value,nil,'-').result_with_hash(node:node) if template_fields.include?key
       
         case key
 
