@@ -44,6 +44,22 @@ resource_list = %w(
   route
   mount
 )
+# func(value,node-object) recursively render Arrays and Strings using ERB
+module BaseTemplateERB
+  def self.render_erbs(value,node)
+    case value
+
+    when Array
+      value=value.collect{|v| render_erbs(v,node)  }
+    when String
+      value=ERB.new(value,nil,'-').result_with_hash(node:node)
+    else
+      value
+    end
+
+  end
+end
+
 
 if not node['base']['resources'].empty?
   resource_list += node['base']['resources']
@@ -85,23 +101,14 @@ resource_list.each do |resource|
 
     # Expand user defined 'name' of resource via ERB if specified
     expanded_name = template_fields.include?("name") ?
-                      ERB.new(name,nil,'-').result_with_hash(node:node) :
+                      BaseTemplateERB::render_erbs(name,node) :
                       name
 
     public_send(resource, expanded_name) do
 
       conf.each do |key,value|
         # Expand config field via ERB if specified
-        if template_fields.include?key
-          case value
-
-          when String
-            value=ERB.new(value,nil,'-').result_with_hash(node:node)
-          when Array
-            value=value.collect{|v| v.is_a?(String) ? ERB.new(v,nil,'-').result_with_hash(node:node) : value  }
-          end
-
-        end
+        value=BaseTemplateERB::render_erbs(value,node) if template_fields.include?key
       
         case key
 
