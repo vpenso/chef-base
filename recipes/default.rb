@@ -92,7 +92,16 @@ resource_list.each do |resource|
 
       conf.each do |key,value|
         # Expand config field via ERB if specified
-        value=ERB.new(value,nil,'-').result_with_hash(node:node) if template_fields.include?key
+        if template_fields.include?key
+          case value
+
+          when String
+            value=ERB.new(value,nil,'-').result_with_hash(node:node)
+          when Array
+            value=value.collect{|v| v.is_a?(String) ? ERB.new(v,nil,'-').result_with_hash(node:node) : value  }
+          end
+
+        end
       
         case key
 
